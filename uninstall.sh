@@ -36,7 +36,7 @@ rm -rf -- "$data/plasma/desktoptheme/breeze-with-blur" "$data/icons/Papirus-Dark
 rm -f -- "$data/konsole/Breeze-with-blur.colorscheme" "$data/konsole/Breeze-with-blur.profile"
 if [ -f "$state/ghostty-config.ghostty.orig" ]; then
     cp "$state/ghostty-config.ghostty.orig" "$conf/ghostty/config.ghostty"
-elif [ -f "$conf/ghostty/config.ghostty" ] && grep -q 'Breeze with blur' "$conf/ghostty/config.ghostty"; then
+elif [ -f "$conf/ghostty/config.ghostty" ] && grep -q 'Breeze with Blur' "$conf/ghostty/config.ghostty"; then
     rm -f -- "$conf/ghostty/config.ghostty"
 fi
 rm -rf -- "$state"

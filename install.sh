@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Breeze with blur — instala o visual no usuário atual (KDE Plasma 6, Wayland).
+# Breeze with Blur — instala o visual no usuário atual (KDE Plasma 6, Wayland).
 # Não usa sudo (o Better Blur DX é instalado antes, por ./better-blur-dx.sh). Guarda os valores antigos em ~/.local/share/breeze-with-blur/backup.ini
 # para o uninstall.sh restaurar.
 set -euo pipefail

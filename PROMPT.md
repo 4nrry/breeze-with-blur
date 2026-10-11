@@ -4,7 +4,7 @@ Cole o texto abaixo no Claude Code aberto **dentro da pasta do repositório clon
 
 ---
 
-Quero aplicar no meu KDE Plasma o visual deste repositório (Breeze with blur). Leia o `README.md`, o `install.sh`
+Quero aplicar no meu KDE Plasma o visual deste repositório (Breeze with Blur). Leia o `README.md`, o `install.sh`
 e o `uninstall.sh` inteiros antes de fazer qualquer coisa, e siga este roteiro:
 
 1. **Confira o ambiente** e me diga o que encontrou: versão do Plasma (`plasmashell --version`), sessão

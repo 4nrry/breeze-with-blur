@@ -2,5 +2,5 @@
 ColorScheme=Breeze-with-blur
 
 [General]
-Name=Breeze with blur
+Name=Breeze with Blur
 Parent=FALLBACK/

@@ -1,6 +1,6 @@
-# Breeze with blur
+# Breeze with Blur
 
-O visual **Breeze with blur** para KDE Plasma 6: o Breeze Escuro de sempre, só com vidro (blur) onde ele fica bonito.
+O visual **Breeze with Blur** para KDE Plasma 6: o Breeze Escuro de sempre, só com vidro (blur) onde ele fica bonito.
 Nada de tema da loja, nada de estilo de app trocado — é uma cópia local do Breeze com algumas opacidades editadas.
 
 - **Painel, popups, dicas e menus** translúcidos a 20% com blur
@@ -37,7 +37,7 @@ O `install.sh` não usa sudo e só mexe no usuário atual (ele para com um aviso
 | Better Blur DX ligado no lugar do blur do KWin, Translucidez ligada | `kwinrc` |
 | Só com `--zen`: force blur nas janelas `zen` (soma à lista que já existir) | `kwinrc` |
 | Ícones `Papirus-Dark-Pink` (tema que só tem links para o Papirus instalado) | `~/.local/share/icons/` |
-| Perfil "Breeze with blur" do Konsole (padrão; o Yakuake usa o mesmo) | `~/.local/share/konsole/`, `konsolerc` |
+| Perfil "Breeze with Blur" do Konsole (padrão; o Yakuake usa o mesmo) | `~/.local/share/konsole/`, `konsolerc` |
 | Moldura do Yakuake translúcida | `yakuakerc` |
 | Ghostty: tema Breeze, fundo `#202326`, opacidade 0.2, blur | `~/.config/ghostty/config.ghostty` |
 
