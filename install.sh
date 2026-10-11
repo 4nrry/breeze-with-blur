@@ -1,17 +1,27 @@
 #!/usr/bin/env bash
 # Breeze with Blur — instala o visual no usuário atual (KDE Plasma 6, Wayland).
-# Não usa sudo (o Better Blur DX é instalado antes, por ./better-blur-dx.sh). Guarda os valores antigos em ~/.local/share/breeze-with-blur/backup.ini
-# para o uninstall.sh restaurar.
+# Não usa sudo: o Better Blur DX (./better-blur-dx.sh) e o Papirus (apt) são instalados antes.
+# Guarda os valores antigos em ~/.local/share/breeze-with-blur/backup.ini para o uninstall.sh restaurar.
+#
+# Uso: ./install.sh [--icons] [--konsole] [--yakuake] [--ghostty] [--zen]
+#   sem opções  só o visual do sistema (estilo do Plasma, cores, decoração, menus, blur)
+#   --icons     ícones Papirus-Dark com pastas rosa (precisa de: sudo apt install papirus-icon-theme)
+#   --konsole   perfil "Breeze with Blur" no Konsole (fundo #202326 a 20% + blur)
+#   --yakuake   o mesmo perfil no Yakuake (ele usa o perfil padrão do Konsole) + moldura translúcida
+#   --ghostty   config do Ghostty (substitui ~/.config/ghostty/config.ghostty; guarda uma cópia)
+#   --zen       força blur nas janelas do Zen Browser (precisa do mod Transparent Zen; ver zen/README.md)
 set -euo pipefail
 
-# Uso: ./install.sh [--zen]
-#   --zen  também força o blur nas janelas do Zen Browser (precisa do mod Transparent Zen; ver zen/README.md)
-zen=0
+icons=0 konsole=0 yakuake=0 ghostty=0 zen=0
 for arg in "$@"; do
     case "$arg" in
+        --icons) icons=1 ;;
+        --konsole) konsole=1 ;;
+        --yakuake) yakuake=1 ;;
+        --ghostty) ghostty=1 ;;
         --zen) zen=1 ;;
-        -h|--help) sed -n '2,10p' "$0"; exit 0 ;;
-        *) echo "opção desconhecida: $arg (use --zen ou --help)" >&2; exit 1 ;;
+        -h|--help) sed -n '2,12p' "$0"; exit 0 ;;
+        *) echo "opção desconhecida: $arg (veja --help)" >&2; exit 1 ;;
     esac
 done
 
@@ -25,16 +35,20 @@ need() { command -v "$1" >/dev/null || { echo "falta o comando: $1" >&2; exit 1;
 need kwriteconfig6
 need kreadconfig6
 need plasma-apply-desktoptheme
+need plasma-apply-colorscheme
 
-# O Better Blur DX é obrigatório (substitui o blur do KWin). Compile antes com ./better-blur-dx.sh
+# Pré-requisitos instalados com sudo, fora deste script
 bbdx=""
 for so in /usr/lib/*/qt6/plugins/kwin/effects/plugins/better_blur_dx.so /usr/lib/qt6/plugins/kwin/effects/plugins/better_blur_dx.so; do
     [ -e "$so" ] && bbdx="$so"
 done
-if [ -z "$bbdx" ]; then
-    echo "Better Blur DX não está instalado. Rode primeiro:  ./better-blur-dx.sh" >&2
-    exit 1
+[ -n "$bbdx" ] || { echo "Better Blur DX não está instalado. Rode primeiro:  ./better-blur-dx.sh" >&2; exit 1; }
+if [ "$icons" -eq 1 ] && [ ! -d /usr/share/icons/Papirus-Dark ]; then
+    echo "Papirus não está instalado. Rode primeiro:  sudo apt install papirus-icon-theme" >&2; exit 1
 fi
+if [ "$konsole" -eq 1 ] || [ "$yakuake" -eq 1 ]; then command -v konsole >/dev/null || echo "aviso: Konsole não está instalado; o perfil fica pronto para quando estiver" >&2; fi
+if [ "$yakuake" -eq 1 ]; then command -v yakuake >/dev/null || echo "aviso: Yakuake não está instalado" >&2; fi
+if [ "$ghostty" -eq 1 ]; then command -v ghostty >/dev/null || echo "aviso: Ghostty não está instalado; a config fica pronta para quando estiver" >&2; fi
 
 mkdir -p "$state"
 
@@ -54,7 +68,22 @@ set_key() {
     kwriteconfig6 --file "$1" "${args[@]}" --key "$3" "$4"
 }
 
-echo "== Estilo do Plasma (painel, popups e dicas translúcidos)"
+echo "== Esquema de cores Breeze Escuro, destaque tirado do papel de parede"
+remember kdeglobals General ColorScheme
+plasma-apply-colorscheme BreezeDark
+set_key kdeglobals General accentColorFromWallpaper true
+
+echo "== Estilo dos apps e decoração das janelas: Breeze"
+set_key kdeglobals KDE widgetStyle Breeze
+set_key kwinrc org.kde.kdecoration2 library org.kde.breeze
+set_key kwinrc org.kde.kdecoration2 theme Breeze
+set_key breezerc Common OutlineEnabled true
+set_key breezerc Common RoundedCorners true
+
+echo "== Menus dos apps a 20%"
+set_key breezerc Style MenuOpacity 20
+
+echo "== Estilo do Plasma Breeze with Blur (painel, popups e dicas a 20%, contorno 12%)"
 mkdir -p "$data/plasma/desktoptheme"
 rm -rf -- "$data/plasma/desktoptheme/breeze-with-blur"
 cp -r "$repo/plasma/breeze-with-blur" "$data/plasma/desktoptheme/"
@@ -67,27 +96,27 @@ while IFS= read -r panel; do
     set_key plasmashellrc "PlasmaViews>$panel" panelOpacity 2
 done < <(sed -n 's/^\[PlasmaViews\]\[\(Panel [0-9]*\)\]$/\1/p' "$conf/plasmashellrc" 2>/dev/null || true)
 
-echo "== Menus dos apps a 20% (estilo Breeze)"
-set_key breezerc Style MenuOpacity 20
-
 echo "== Better Blur DX no lugar do blur do KWin (os dois juntos conflitam) + translucidez"
 set_key kwinrc Plugins blurEnabled false
 set_key kwinrc Plugins better_blur_dxEnabled true
 set_key kwinrc Plugins translucencyEnabled true
-# Painel, menus e terminais já pedem blur sozinhos. Forçar blur no Zen é opcional (--zen).
+
+echo "== Animação de minimizar: Lâmpada mágica (no lugar de Encolher)"
+set_key kwinrc Plugins magiclampEnabled true
+set_key kwinrc Plugins squashEnabled false
+# Valores do Better Blur DX como estão no computador de origem (os padrões do efeito)
+set_key kwinrc Effect-better-blur-dx BlurStrength 15
+set_key kwinrc Effect-better-blur-dx NoiseStrength 5
+set_key kwinrc Effect-better-blur-dx Brightness 100
+set_key kwinrc Effect-better-blur-dx Saturation 150
+set_key kwinrc Effect-better-blur-dx Contrast 100
+set_key kwinrc Effect-better-blur-dx ForceContrastParams false
+set_key kwinrc Effect-better-blur-dx CornerRadius 0
 set_key kwinrc Effect-better-blur-dx BlurMatching true
 set_key kwinrc Effect-better-blur-dx BlurNonMatching false
-if [ "$zen" -eq 1 ]; then
-    echo "== Zen: force blur nas janelas de classe zen"
-    remember kwinrc Effect-better-blur-dx WindowClasses
-    classes="$(kreadconfig6 --file kwinrc --group Effect-better-blur-dx --key WindowClasses)"
-    if ! printf '%s\n' "$classes" | grep -qx zen; then
-        kwriteconfig6 --file kwinrc --group Effect-better-blur-dx --key WindowClasses "$(printf '%s\nzen' "$classes" | sed '/^$/d')"
-    fi
-fi
 
-echo "== Ícones Papirus-Dark com pastas rosa"
-if [ -d /usr/share/icons/Papirus ]; then
+if [ "$icons" -eq 1 ]; then
+    echo "== Ícones Papirus-Dark com pastas rosa"
     dst="$data/icons/Papirus-Dark-Pink"
     rm -rf -- "$dst"
     mkdir -p "$dst"
@@ -97,29 +126,43 @@ if [ -d /usr/share/icons/Papirus ]; then
         ln -sfn "$target" "$dst/$link"
     done < "$repo/icons/Papirus-Dark-Pink/links.tsv"
     remember kdeglobals Icons Theme
-    changeicons="$(ls /usr/lib/*/libexec/plasma-changeicons /usr/libexec/plasma-changeicons 2>/dev/null | head -1 || true)"
+    changeicons=""
+    for c in /usr/lib/*/libexec/plasma-changeicons /usr/libexec/plasma-changeicons; do
+        [ -x "$c" ] && changeicons="$c"
+    done
     if [ -n "$changeicons" ]; then "$changeicons" Papirus-Dark-Pink; else kwriteconfig6 --file kdeglobals --group Icons --key Theme Papirus-Dark-Pink; fi
-else
-    echo "   pulado: instale antes com  sudo apt install papirus-icon-theme  e rode de novo"
 fi
 
-echo "== Konsole e Yakuake (#202326 a 20% + blur)"
-mkdir -p "$data/konsole"
-cp "$repo/konsole/Breeze-with-blur.colorscheme" "$repo/konsole/Breeze-with-blur.profile" "$data/konsole/"
-set_key konsolerc "Desktop Entry" DefaultProfile Breeze-with-blur.profile
-set_key yakuakerc Appearance Translucency true
-set_key yakuakerc Appearance BackgroundColor 32,35,38
-set_key yakuakerc Appearance BackgroundColorOpacity 20
+if [ "$konsole" -eq 1 ] || [ "$yakuake" -eq 1 ]; then
+    echo "== Perfil Breeze with Blur do Konsole (#202326 a 20% + blur)"
+    mkdir -p "$data/konsole"
+    cp "$repo/konsole/Breeze-with-blur.colorscheme" "$repo/konsole/Breeze-with-blur.profile" "$data/konsole/"
+    set_key konsolerc "Desktop Entry" DefaultProfile Breeze-with-blur.profile
+fi
 
-echo "== Ghostty"
-if command -v ghostty >/dev/null; then
+if [ "$yakuake" -eq 1 ]; then
+    echo "== Moldura do Yakuake translúcida"
+    set_key yakuakerc Appearance Translucency true
+    set_key yakuakerc Appearance BackgroundColor 32,35,38
+    set_key yakuakerc Appearance BackgroundColorOpacity 20
+fi
+
+if [ "$ghostty" -eq 1 ]; then
+    echo "== Ghostty (tema Breeze, fundo #202326 a 20% + blur)"
     mkdir -p "$conf/ghostty"
-    for f in config.ghostty config; do
-        [ -e "$conf/ghostty/$f" ] && [ ! -e "$state/ghostty-$f.orig" ] && cp "$conf/ghostty/$f" "$state/ghostty-$f.orig"
-    done
+    if [ -e "$conf/ghostty/config.ghostty" ] && [ ! -e "$state/ghostty-config.ghostty.orig" ]; then
+        cp "$conf/ghostty/config.ghostty" "$state/ghostty-config.ghostty.orig"
+    fi
     cp "$repo/ghostty/config.ghostty" "$conf/ghostty/config.ghostty"
-else
-    echo "   pulado: Ghostty não está instalado"
+fi
+
+if [ "$zen" -eq 1 ]; then
+    echo "== Zen: force blur nas janelas de classe zen"
+    remember kwinrc Effect-better-blur-dx WindowClasses
+    classes="$(kreadconfig6 --file kwinrc --group Effect-better-blur-dx --key WindowClasses)"
+    if ! printf '%s\n' "$classes" | grep -qx zen; then
+        kwriteconfig6 --file kwinrc --group Effect-better-blur-dx --key WindowClasses "$(printf '%s\nzen' "$classes" | sed '/^$/d')"
+    fi
 fi
 
 echo "== Recarregando"
@@ -129,6 +172,6 @@ systemctl --user restart plasma-plasmashell.service 2>/dev/null || { kquitapp6 p
 
 echo
 echo "Pronto. Backup dos valores antigos: $backup"
-echo "Abra de novo o Konsole/Ghostty para ver os terminais novos."
-[ "$zen" -eq 1 ] && echo "Zen: instale o mod Transparent Zen e ajuste como em zen/README.md, depois reinicie o Zen."
-true
+echo "Saia e entre na sessão para todas as janelas pegarem a decoração e o blur novos."
+if [ "$konsole" -eq 1 ] || [ "$yakuake" -eq 1 ] || [ "$ghostty" -eq 1 ]; then echo "Reabra os terminais para ver o fundo novo."; fi
+if [ "$zen" -eq 1 ]; then echo "Zen: instale o mod Transparent Zen e ajuste como em zen/README.md, depois reinicie o Zen."; fi

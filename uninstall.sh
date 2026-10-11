@@ -25,11 +25,14 @@ while IFS= read -r line; do
     fi
 done < "$backup"
 
+scheme="$(kreadconfig6 --file kdeglobals --group General --key ColorScheme)"
+plasma-apply-colorscheme "${scheme:-BreezeDark}" >/dev/null 2>&1 || true
 theme="$(kreadconfig6 --file plasmarc --group Theme --key name)"
 plasma-apply-desktoptheme "${theme:-default}" || true
 icons="$(kreadconfig6 --file kdeglobals --group Icons --key Theme)"
-changeicons="$(ls /usr/lib/*/libexec/plasma-changeicons /usr/libexec/plasma-changeicons 2>/dev/null | head -1 || true)"
-[ -n "$changeicons" ] && "$changeicons" "${icons:-breeze-dark}" || true
+for c in /usr/lib/*/libexec/plasma-changeicons /usr/libexec/plasma-changeicons; do
+    [ -x "$c" ] && { "$c" "${icons:-breeze-dark}" || true; break; }
+done
 
 echo "== Removendo arquivos"
 rm -rf -- "$data/plasma/desktoptheme/breeze-with-blur" "$data/icons/Papirus-Dark-Pink"
