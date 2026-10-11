@@ -1,5 +1,7 @@
 # Breeze with Blur
 
+![Menu de aplicativos e menu do painel translúcidos com blur sobre o papel de parede](screenshots/menu.webp)
+
 O visual **Breeze with Blur** para KDE Plasma 6: o Breeze Escuro de sempre, só com vidro (blur) onde ele fica bonito.
 Nada de tema da loja, nada de estilo de app trocado — é uma cópia local do Breeze com algumas opacidades editadas.
 
