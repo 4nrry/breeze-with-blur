@@ -1,11 +1,13 @@
-# Better Blur DX (opcional, só para o Zen)
+# Better Blur DX
 
 O blur nativo do KWin só funciona em apps que pedem blur (Konsole, Yakuake, Ghostty, painel, menus).
 Para o **Zen** ganhar blur de verdade é preciso o efeito [Better Blur DX](https://github.com/xarblu/kwin-effects-better-blur-dx),
 que **força** o blur em janelas escolhidas.
 
 > Custo: é compilado a partir do código-fonte e **precisa ser recompilado a cada atualização do KWin/Plasma**
-> (senão some da lista de efeitos). Sem ele, o resto do tema funciona normalmente.
+> (senão some da lista de efeitos e o Zen perde o blur).
+
+O `../better-blur-dx.sh` faz tudo abaixo e o `../install.sh` faz a configuração. Os passos manuais, para referência:
 
 ## Instalar (Kubuntu, Wayland) — passos do README do projeto
 
@@ -27,9 +29,9 @@ Testado aqui no commit `3d8c1a8` (Plasma 6.6.6).
 ## Depois de atualizar o Plasma
 
 ```bash
-cd ~/src/kwin-effects-better-blur-dx && git pull && ./build.sh
+./better-blur-dx.sh
 ```
-e saia/entre na sessão.
+(ou `cd ~/src/kwin-effects-better-blur-dx && git pull && ./build.sh`) e saia/entre na sessão.
 
 ## O que não funcionou (para não repetir)
 

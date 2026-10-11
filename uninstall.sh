@@ -4,7 +4,7 @@ set -euo pipefail
 
 data="${XDG_DATA_HOME:-$HOME/.local/share}"
 conf="${XDG_CONFIG_HOME:-$HOME/.config}"
-state="$data/breeze-by-4nrry"
+state="$data/breeze-with-blur"
 backup="$state/backup.ini"
 
 [ -f "$backup" ] || { echo "nada para desfazer: $backup não existe" >&2; exit 1; }
@@ -32,11 +32,11 @@ changeicons="$(ls /usr/lib/*/libexec/plasma-changeicons /usr/libexec/plasma-chan
 [ -n "$changeicons" ] && "$changeicons" "${icons:-breeze-dark}" || true
 
 echo "== Removendo arquivos"
-rm -rf -- "$data/plasma/desktoptheme/breeze-by-4nrry" "$data/icons/Papirus-Dark-Pink"
-rm -f -- "$data/konsole/Breeze-by-4nrry.colorscheme" "$data/konsole/Breeze-by-4nrry.profile"
+rm -rf -- "$data/plasma/desktoptheme/breeze-with-blur" "$data/icons/Papirus-Dark-Pink"
+rm -f -- "$data/konsole/Breeze-with-blur.colorscheme" "$data/konsole/Breeze-with-blur.profile"
 if [ -f "$state/ghostty-config.ghostty.orig" ]; then
     cp "$state/ghostty-config.ghostty.orig" "$conf/ghostty/config.ghostty"
-elif [ -f "$conf/ghostty/config.ghostty" ] && grep -q 'Breeze by 4nrry' "$conf/ghostty/config.ghostty"; then
+elif [ -f "$conf/ghostty/config.ghostty" ] && grep -q 'Breeze with blur' "$conf/ghostty/config.ghostty"; then
     rm -f -- "$conf/ghostty/config.ghostty"
 fi
 rm -rf -- "$state"

@@ -55,9 +55,9 @@
         "Category": "",
         "Description": "Breeze Dark com painel, popups e dicas translúcidos (20%) — tema local",
         "EnabledByDefault": true,
-        "Id": "breeze-by-4nrry",
+        "Id": "breeze-with-blur",
         "License": "LGPL",
-        "Name": "Breeze by 4nrry",
+        "Name": "Breeze with blur",
         "Version": "6.22.0",
         "Website": "https://www.kde.org/"
     },

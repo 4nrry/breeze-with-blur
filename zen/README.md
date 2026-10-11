@@ -1,7 +1,7 @@
 # Zen Browser com blur de verdade
 
-O Zen só fica com blur de verdade junto do **Better Blur DX** (ver [`../kwin/better-blur-dx.md`](../kwin/better-blur-dx.md)).
-Sem ele, dá para usar o mesmo mod com uma imagem de fundo (blur falso).
+Opcional. O blur de verdade vem do **Better Blur DX**: rode `./install.sh --zen` para forçar blur nas janelas de classe `zen`.
+Falta só deixar o Zen transparente com o mod abaixo.
 
 ## Mod: Transparent Zen (sameerasw)
 
@@ -13,7 +13,7 @@ Ajustes usados, nas opções do mod:
 | Transparency color | `#20232633` (cinza do Breeze a 20%) |
 | Allow transparency | **desligado** (ligado, sites de fundo branco ficam quebrados) |
 | Transparency on Linux | **ligado** |
-| Background image | **desligado** (com Better Blur DX; ligue e use o papel de parede se não tiver) |
+| Background image | **desligado** (o fundo é o blur do Better Blur DX) |
 | Light tint | Flip |
 | Transparent sidebar / glance | ligados |
 | No shadow | ligado |
