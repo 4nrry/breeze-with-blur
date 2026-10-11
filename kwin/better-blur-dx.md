@@ -12,7 +12,7 @@ O `../better-blur-dx.sh` faz tudo abaixo e o `../install.sh` faz a configuraçã
 ## Instalar (Kubuntu, Wayland) — passos do README do projeto
 
 ```bash
-sudo apt install -y git cmake g++ extra-cmake-modules qt6-tools-dev kwin-dev libkf6configwidgets-dev gettext libkf6crash-dev libkf6globalaccel-dev libkf6kio-dev libkf6service-dev libkf6notifications-dev libkf6kcmutils-dev libkdecorations3-dev libxcb-composite0-dev libxcb-randr0-dev libxcb-shm0-dev libxcb-res0-dev libxcb-sync-dev
+sudo apt install -y git cmake g++ extra-cmake-modules qt6-tools-dev kwin-dev libkf6configwidgets-dev gettext libkf6crash-dev libkf6globalaccel-dev libkf6kio-dev libkf6service-dev libkf6notifications-dev libkf6kcmutils-dev libkdecorations3-dev libxcb-composite0-dev libxcb-randr0-dev libxcb-shm0-dev libxcb-res0-dev libxcb-sync-dev libdrm-dev
 git clone https://github.com/xarblu/kwin-effects-better-blur-dx ~/src/kwin-effects-better-blur-dx
 cd ~/src/kwin-effects-better-blur-dx && ./build.sh
 ```

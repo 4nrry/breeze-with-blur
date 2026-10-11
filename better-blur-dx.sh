@@ -15,7 +15,7 @@ echo "== Dependências de compilação (apt)"
 sudo apt install -y git cmake g++ extra-cmake-modules qt6-tools-dev kwin-dev libkf6configwidgets-dev gettext \
     libkf6crash-dev libkf6globalaccel-dev libkf6kio-dev libkf6service-dev libkf6notifications-dev \
     libkf6kcmutils-dev libkdecorations3-dev libxcb-composite0-dev libxcb-randr0-dev libxcb-shm0-dev \
-    libxcb-res0-dev libxcb-sync-dev
+    libxcb-res0-dev libxcb-sync-dev libdrm-dev
 
 echo "== Código-fonte em $src"
 if [ -d "$src/.git" ]; then
