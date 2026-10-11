@@ -1,0 +1,5 @@
+# Vidro combinando com o tema "Breeze by 4nrry": cor base #202326 a 20% (igual ao Zen) + blur do KWin
+theme = Breeze
+background = #202326
+background-opacity = 0.2
+background-blur = true
